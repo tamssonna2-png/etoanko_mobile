@@ -37,7 +37,7 @@ class _DashboardState extends State<Dashboard> {
             ),
             child: Column(
               children: [
-                Text("SOLDE DISPONIBLE"),
+                Text("SOLDE DISPONIBLE "),
                 Text("${solde.toString()} FCFA"),
                 Text("$nomComplet")
               ],
