@@ -1,3 +1,9 @@
+import 'package:etoankopay/pages/envoie.dart';
+import 'package:etoankopay/pages/historique.dart';
+import 'package:etoankopay/pages/profil.dart';
+import 'package:etoankopay/pages/recharge.dart';
+import 'package:etoankopay/pages/retrait.dart';
+import 'package:etoankopay/pages/tarifs.dart';
 import 'package:etoankopay/widjet/main_layout.dart';
 import 'package:flutter/material.dart';
 
@@ -15,13 +21,21 @@ class _DashboardState extends State<Dashboard> {
   String nomComplet="";
   final List<String> nomAction =["Recharger","Retirer","Envoyer","Historique","Profil","Tarifs"];
   final List<IconData> icons = [
-  Icons.add_circle_outline, // Recharger
-  Icons.arrow_downward,     // Retirer
-  Icons.send,               // Envoyer
-  Icons.history,            // Historique
-  Icons.person,             // Profil
-  Icons.sell_outlined,      // Tarifs
-];
+    Icons.add_circle_outline, 
+    Icons.arrow_downward,     
+    Icons.send,              
+    Icons.history,            
+    Icons.person,             
+    Icons.sell_outlined,      
+  ];
+  final List<Widget> page =[
+    Recharge(),
+    Retrait(),
+    Envoie(),
+    Historique(),
+    Profil(),
+    Tarifs()
+  ];
   @override
   Widget build(BuildContext context) {
     return MainLayout(
@@ -69,7 +83,12 @@ class _DashboardState extends State<Dashboard> {
                       borderRadius: BorderRadius.circular(12)
                     )
                   ),
-                  onPressed: (){}, 
+                  onPressed: (){
+                    Navigator.push(
+                      context, 
+                      PageRouteBuilder(pageBuilder: (_,__,___)=>page[index])
+                      );
+                  }, 
                   label:  Text(
                     nomAction[index]
                   ),

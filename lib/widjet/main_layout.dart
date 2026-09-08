@@ -9,9 +9,10 @@ class MainLayout extends StatelessWidget {
   const new({
     super.key,
     this.titre = "MoneyAPI",
+    required this.nomCompletUtilisateur,
     required this.child,
     this.actions,
-    required this.nomCompletUtilisateur
+    
     });
 
   @override
