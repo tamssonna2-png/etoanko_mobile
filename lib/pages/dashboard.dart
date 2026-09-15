@@ -1,32 +1,42 @@
+import 'package:etoankopay/application/utilisateur_provider/connexion_provider.dart';
+import 'package:etoankopay/pages/page_transaction/transfert.dart';
+import 'package:etoankopay/pages/page_historique/historique.dart';
+import 'package:etoankopay/pages/profil.dart';
+import 'package:etoankopay/pages/page_transaction/recharge.dart';
+import 'package:etoankopay/pages/page_transaction/retrait.dart';
+import 'package:etoankopay/pages/tarifs.dart';
 import 'package:etoankopay/widjet/main_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Dashboard extends StatefulWidget {
+class Dashboard extends ConsumerWidget {
   const new({super.key});
 
   @override
-  State<Dashboard> createState() => _DashboardState();
-}
-
-class _DashboardState extends State<Dashboard> {
-
-  int nombreGrilles=6;
-  double solde = 0;
-  String nomComplet="";
-  final List<String> nomAction =["Recharger","Retirer","Envoyer","Historique","Profil","Tarifs"];
-  final List<IconData> icons = [
-  Icons.add_circle_outline, // Recharger
-  Icons.arrow_downward,     // Retirer
-  Icons.send,               // Envoyer
-  Icons.history,            // Historique
-  Icons.person,             // Profil
-  Icons.sell_outlined,      // Tarifs
-];
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    int nombreGrilles=6;
+    //double solde = 0;
+    final utilisateur = ref.watch(utilisateurConnecteProvider);
+    final List<String> nomAction =["Recharger","Retirer","Envoyer","Historique","Profil","Tarifs"];
+    final List<IconData> icons = [
+      Icons.add_circle_outline, 
+      Icons.arrow_downward,     
+      Icons.send,              
+      Icons.history,            
+      Icons.person,             
+      Icons.sell_outlined,      
+    ];
+    final List<Widget> page =[
+      Recharge(),
+      Retrait(),
+      Transfert(),
+      Historique(),
+      Profil(),
+      Tarifs()
+    ];
     return MainLayout(
-      titre: "Ta", 
-      nomCompletUtilisateur: " ",
+      titre: "Daashboard", 
+      nomCompletUtilisateur: utilisateur?.nom ?? "",
       child: Column(
         children: [
           Container(
@@ -37,9 +47,9 @@ class _DashboardState extends State<Dashboard> {
             ),
             child: Column(
               children: [
-                Text("SOLDE DISPONIBLE"),
-                Text("${solde.toString()} FCFA"),
-                Text("$nomComplet")
+                Text("SOLDE DISPONIBLE "),
+                Text("${utilisateur?.solde.toString()} FCFA"),
+                Text("${utilisateur?.nom}")
               ],
             )
             
@@ -69,7 +79,12 @@ class _DashboardState extends State<Dashboard> {
                       borderRadius: BorderRadius.circular(12)
                     )
                   ),
-                  onPressed: (){}, 
+                  onPressed: (){
+                    Navigator.push(
+                      context, 
+                      PageRouteBuilder(pageBuilder: (_,__,___)=>page[index])
+                      );
+                  }, 
                   label:  Text(
                     nomAction[index]
                   ),
@@ -83,4 +98,8 @@ class _DashboardState extends State<Dashboard> {
       
       ) ;
   }
+  
 }
+
+ 
+  

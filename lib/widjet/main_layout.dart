@@ -9,17 +9,18 @@ class MainLayout extends StatelessWidget {
   const new({
     super.key,
     this.titre = "MoneyAPI",
+    required this.nomCompletUtilisateur,
     required this.child,
     this.actions,
-    required this.nomCompletUtilisateur
+    
     });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(titre),
-        backgroundColor: Colors.black,
+        title: Text("$titre $nomCompletUtilisateur"),
+        backgroundColor: Colors.red,
         actions: actions,
       ),
 //il y'aura trois boutons
