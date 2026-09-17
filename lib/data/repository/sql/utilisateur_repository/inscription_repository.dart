@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart';
+/*import 'package:drift/drift.dart';
 import 'package:etoankopay/data/database/app_database.dart';
 import 'package:etoankopay/data/repository/sql/sqlite_utilisateur_repositoryImpl.dart';
 import 'package:etoankopay/domain/utilisateur.dart';
@@ -22,3 +22,4 @@ class InscriptionRepository extends SqliteUtilisateurRepositoryImpl{
     );
   }
 }
+*/

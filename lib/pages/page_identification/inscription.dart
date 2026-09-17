@@ -5,6 +5,7 @@ import 'package:etoankopay/application/utilisateur_provider/inscription_provider
 import 'package:etoankopay/domain/utilisateur.dart';
 import 'package:etoankopay/main.dart';
 import 'package:etoankopay/pages/dashboard.dart';
+import 'package:etoankopay/pages/page_identification/terms_conditions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -209,6 +210,15 @@ class _InscriptionState extends ConsumerState<Inscription> {
                 });
               },
               controlAffinity: ListTileControlAffinity.leading,
+            ),
+            SizedBox(
+              child: ElevatedButton(
+                onPressed: (){
+                  Navigator.push(context, 
+                  PageRouteBuilder(pageBuilder: (_,__,___)=>TermsConditionsScreen()));
+                }, 
+                child: Text("voir plus ...")
+                ),
             ),
             SizedBox(
               child: ElevatedButton.icon(

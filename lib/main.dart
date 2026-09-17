@@ -3,12 +3,14 @@ import 'package:etoankopay/data/repository/share_prefeerence/session_repository.
 import 'package:etoankopay/pages/page_identification/connexion.dart';
 import 'package:etoankopay/pages/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
+  await dotenv.load(fileName: ".env");
   runApp(
      ProviderScope(
       overrides: [

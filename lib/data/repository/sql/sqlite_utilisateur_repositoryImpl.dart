@@ -1,6 +1,8 @@
+import 'package:drift/drift.dart';
 import 'package:etoankopay/data/database/app_database.dart';
 import 'package:etoankopay/data/repository/utilisateur_repository.dart';
 import 'package:etoankopay/domain/utilisateur.dart';
+import 'package:etoankopay/securite/hasher_mot_de_passe.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SqliteUtilisateurRepositoryImpl implements UtilisateurRepository {
@@ -9,10 +11,46 @@ class SqliteUtilisateurRepositoryImpl implements UtilisateurRepository {
   SqliteUtilisateurRepositoryImpl(this.db);
 
   @override
-  Future<void> ajouterUtilisateur(Utilisateur user)async{}
+  Future<Utilisateur?> authentifier(String email, String motDePasse) async {
+    final query = db.select(db.utilisateurTable)
+      ..where((u) => u.email.equals(email));
+    
+    final user= await query.getSingleOrNull();
+    if (user == null) return null;
+    print("\n \n \n \n \n VOICI L'UTILISATEUR $user\n \n \n \n \n");
 
-  @override
-  Future<Utilisateur?> authentifier(String email, String motDePasse) async =>null;
+    final bool estValide = HasherMotDePasse.verifierMotDePasse(
+      motDePasse,
+      user.motDePasse
+    );
+
+    if(estValide==true){
+      return Utilisateur(
+        nom: user.nom,
+        email: user.email,
+        telephone: user.telephone,
+        motDePasse: user.motDePasse,
+        codePin: user.codePin,
+        conditionGenerale: user.conditionGenerale,
+        solde: user.solde,
+      );
+    }
+    return null;
+  }
+
+  Future<void> ajouterUtilisateur(Utilisateur user) async {
+    await db.into(db.utilisateurTable).insert(
+      UtilisateurTableCompanion.insert(
+        telephone: user.telephone,
+        nom: user.nom,
+        email: user.email,
+        motDePasse: HasherMotDePasse.hasherMotDePasse(user.motDePasse),
+        codePin: HasherMotDePasse.hasherMotDePasse(user.codePin),
+        conditionGenerale: Value(user.conditionGenerale),
+        solde: Value(user.solde),
+      ),
+    );
+  }
 
 
   Utilisateur toDomain(UtilisateurTableData row) {
