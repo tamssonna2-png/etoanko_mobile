@@ -19,8 +19,8 @@ class MainLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(titre),
-        backgroundColor: Colors.black,
+        title: Text("$titre $nomCompletUtilisateur"),
+        backgroundColor: Colors.red,
         actions: actions,
       ),
 //il y'aura trois boutons

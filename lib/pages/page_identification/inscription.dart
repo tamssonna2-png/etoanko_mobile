@@ -1,15 +1,22 @@
 
+//import 'package:etoankopay/application/connexion_provider.dart';
+import 'package:etoankopay/application/utilisateur_provider/inscription_provider.dart';
+//import 'package:etoankopay/data/inscription_repository.dart';
+import 'package:etoankopay/domain/utilisateur.dart';
 import 'package:etoankopay/main.dart';
+import 'package:etoankopay/pages/dashboard.dart';
+import 'package:etoankopay/pages/page_identification/terms_conditions_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Inscription extends StatefulWidget {
+class Inscription extends ConsumerStatefulWidget{
   const Inscription({super.key});
 
   @override
-  State<Inscription> createState() => _InscriptionState();
+  ConsumerState<Inscription> createState() => _InscriptionState();
 }
 
-class _InscriptionState extends State<Inscription> {
+class _InscriptionState extends ConsumerState<Inscription> {
   final _fomkey = GlobalKey<FormState>();
   final nomComplet = TextEditingController();
   final email = TextEditingController();
@@ -20,9 +27,24 @@ class _InscriptionState extends State<Inscription> {
   final confirmationCodePin = TextEditingController();
   bool _conditionAcceptee =false;
   @override
+  void dispose() {
+    nomComplet.dispose();
+    email.dispose();
+    telephone.dispose();
+    motDePasse.dispose();
+    confirmaionMotDePasse.dispose();
+    codePin.dispose();
+    confirmationCodePin.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Form(
+    
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 16),
+          child: Form(
         key: _fomkey,
         child: Column(
           children: [
@@ -190,10 +212,49 @@ class _InscriptionState extends State<Inscription> {
               controlAffinity: ListTileControlAffinity.leading,
             ),
             SizedBox(
+              child: ElevatedButton(
+                onPressed: (){
+                  Navigator.push(context, 
+                  PageRouteBuilder(pageBuilder: (_,__,___)=>TermsConditionsScreen()));
+                }, 
+                child: Text("voir plus ...")
+                ),
+            ),
+            SizedBox(
               child: ElevatedButton.icon(
-                onPressed:_conditionAcceptee?() {
+                onPressed:_conditionAcceptee?() async{
                   if(_fomkey.currentState!.validate()){
-                    print("object");
+                    try{
+                    final nouvelUtilisateur = Utilisateur(
+                      nom: nomComplet.text, 
+                      email: email.text, 
+                      telephone: telephone.text, 
+                      motDePasse: motDePasse.text, 
+                      codePin: codePin.text, 
+                      conditionGenerale: _conditionAcceptee
+                    );
+                  await ref.read(utilisateurNotifierProvider.notifier).inscrireUtilisateur(nouvelUtilisateur);
+                  //final listeUtilisateur = ref.read(utilisateurNotifierProvider);
+                  //print("$listeUtilisateur");
+                  //final succes = await ref.read(utilisateurConnecteProvider.notifier).estConnecter(email.text,motDePasse.text);
+                  //cette partie est juste pour le test car il doit plutot renvoyer a la verification de l'email
+                  if(mounted){
+                    Navigator.pushReplacement(context,
+                    PageRouteBuilder(pageBuilder: (_,__,___)=> Dashboard())
+                    );
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Email ou mot de passe incorrect"),
+                        backgroundColor: Colors.red,
+                      )
+                    );
+                  }
+
+                  }catch(e,stackTrace){
+                    print("erreur $e");
+                    print("$stackTrace");
+                  }
                   }
                 } :null, 
                 label: Text("Créer mon ccompte gratuitement"),
@@ -215,6 +276,8 @@ class _InscriptionState extends State<Inscription> {
           ],
         ),
       ),
+          )
+        ),
     );
   }
 }

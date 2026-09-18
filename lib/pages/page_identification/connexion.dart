@@ -1,15 +1,18 @@
+import 'package:etoankopay/application/utilisateur_provider/connexion_provider.dart';
+//import 'package:etoankopay/application/inscription_provider.dart';
 import 'package:etoankopay/pages/dashboard.dart';
-import 'package:etoankopay/pages/inscription.dart';
+import 'package:etoankopay/pages/page_identification/inscription.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Connexion extends StatefulWidget {
+class Connexion extends ConsumerStatefulWidget {
   const Connexion({super.key});
 
   @override
-  State<Connexion> createState() => _ConnexionState();
+  ConsumerState<Connexion> createState() => _ConnexionState();
 }
 
-class _ConnexionState extends State<Connexion> {
+class _ConnexionState extends ConsumerState<Connexion> {
 
   final _fomkey = GlobalKey<FormState>();
   final email = TextEditingController();
@@ -89,14 +92,24 @@ class _ConnexionState extends State<Connexion> {
                 ),
                 SizedBox(
                   child: ElevatedButton.icon(
-                    onPressed: (){
+                    onPressed: ()async{
                       if(_fomkey.currentState!.validate()){
-                        print("object 2");
-                        Navigator.push(
-                          context, 
-                          PageRouteBuilder(pageBuilder: (_,__,___)=>Dashboard()
+                        final succes = await ref.read(utilisateurConnecteProvider.notifier).estConnecter(email.text,motDePasse.text);
+                        if(succes){
+                          print("object 2");
+                          Navigator.pushReplacement(
+                            context, 
+                            PageRouteBuilder(pageBuilder: (_,__,___)=>Dashboard()
                           )
                         );
+                        }else{
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Email ou mot de passe incorrect"),
+                              backgroundColor: Colors.red,
+                            )
+                          );
+                        }
                       }
                     }, 
                     label: Text("Se connecter"),
